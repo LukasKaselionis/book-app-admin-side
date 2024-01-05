@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
-import Authorization from "./Http/Controllers/Authorization";
 import connectToMongoDB from "../database/database";
 import { MongoClient } from "mongodb";
+import router from "../router/router";
 
 const app: Application = express();
 const port: string | number = process.env.PORT || 3003;
@@ -10,8 +10,7 @@ const port: string | number = process.env.PORT || 3003;
 app.get("/", (req: Request, res: Response) => {
     res.send("Home");
 });
-app.get("/login", [Authorization.login]);
-app.get("/logout", [Authorization.logout]);
+app.use("/api", router);
 
 const startApp = async (): Promise<void> => {
     const dbClient: MongoClient | undefined = await connectToMongoDB();

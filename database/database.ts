@@ -1,16 +1,19 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
 const dbName: string = "book-app";
 const uri: string = `mongodb://localhost:27017/${dbName}`;
-const client: MongoClient = new MongoClient(uri);
 
-export default async function connectToMongoDB(): Promise<MongoClient | undefined> {
+export default async function connectToMongoDB(): Promise<typeof mongoose | undefined> {
     try {
-        await client.connect();
+        await mongoose.connect(uri);
         console.log("Connected to MongoDB");
 
-        return client;
+        return mongoose;
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
 }
+
+mongoose.connection.on("close", () => {
+    console.log("MongoDB connection closed");
+});

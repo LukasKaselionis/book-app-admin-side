@@ -1,17 +1,46 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { User } from "../../Models/UserScema";
 
 export default class AuthController {
-    public login(req: Request, res: Response): void {
-        res.send("login");
+    public async login(req: Request, res: Response): Promise<void> {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        const secretOrPrivateKey: string = process.env.JWT_SECRET_KEY || "defaultSecret";
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+
+            return;
+        }
+
+        const passwordMatch: boolean = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            res.status(422).json({ message: "Invalid credentials" });
+
+            return;
+        }
+
+        const token: string = jwt.sign(
+            {
+                userId: user.id,
+                email: user.email,
+                password: user.password
+            },
+            secretOrPrivateKey,
+            { expiresIn: "1h" }
+        );
+
+        res.json({ token, message: "Login successfully" });
     }
 
     public async register(req: Request, res: Response): Promise<void> {
         const { firstName, lastName, email } = req.body;
         if (!firstName || !lastName || !email) {
-            res.status(400).json({ message: "Missing required fields" });
+            res.status(422).json({ message: "Missing required fields" });
 
             return;
         }
@@ -71,7 +100,7 @@ export default class AuthController {
         }
 
         if (password !== repeatPassword) {
-            res.status(400).json({ message: "Passwords do not match" });
+            res.status(422).json({ message: "Passwords do not match" });
 
             return;
         }

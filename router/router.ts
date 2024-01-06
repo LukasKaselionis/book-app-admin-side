@@ -13,10 +13,10 @@ router.put("/set-new-password/:id", (req: Request, res: Response) => authControl
 router.post("/forgot-password", (req: Request, res: Response) => authController.forgotPassword(req, res));
 router.get("/logout", (req: Request, res: Response) => authController.logout(req, res));
 
-// AAuthorization routes
-router.get("/book", JWTMiddleware, (req: Request, res: Response) => bookController.getAll(req, res));
+// Authorization routes
+router.get("/book", JWTMiddleware, (req: Request, res: Response) => bookController.list(req, res));
 router.post("/book", JWTMiddleware, (req: Request, res: Response) => bookController.create(req, res));
-router.put("/book/:id", JWTMiddleware, (req: Request, res: Response) => bookController.update(req, res));
-router.delete("/book/:id", JWTMiddleware, (req: Request, res: Response) => bookController.delete(req, res));
+router.patch("/book", JWTMiddleware, (req: Request, res: Response) => bookController.update(req, res));
+router.delete("/book", JWTMiddleware, (req: Request, res: Response) => bookController.delete(req, res));
 
 export default router;

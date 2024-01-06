@@ -11,9 +11,9 @@ router.post("/login", (req: Request, res: Response) => authController.login(req,
 router.post("/register", (req: Request, res: Response) => authController.register(req, res));
 router.put("/set-new-password/:id", (req: Request, res: Response) => authController.setNewPassword(req, res));
 router.post("/forgot-password", (req: Request, res: Response) => authController.forgotPassword(req, res));
-router.get("/logout", (req: Request, res: Response) => authController.logout(req, res));
 
 // Authorization routes
+router.post("/logout", JWTMiddleware, (req: Request, res: Response) => authController.logout(req, res));
 router.get("/book", JWTMiddleware, (req: Request, res: Response) => bookController.list(req, res));
 router.post("/book", JWTMiddleware, (req: Request, res: Response) => bookController.create(req, res));
 router.patch("/book", JWTMiddleware, (req: Request, res: Response) => bookController.update(req, res));

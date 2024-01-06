@@ -12,7 +12,6 @@ export const JWTMiddleware = (req: Request, res: Response, next: NextFunction): 
         return;
     }
 
-
     const [bearer, token] = authHeader.split(" ");
 
     if (!bearer || !token || bearer.toLowerCase() !== "bearer") {

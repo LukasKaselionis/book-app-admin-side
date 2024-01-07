@@ -6,7 +6,6 @@ import router from "../router/router";
 const app: Application = express();
 const port: string | number = process.env.PORT || 3004;
 
-// Routes
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use("/uploads", express.static("app/uploads"));
@@ -26,12 +25,10 @@ const startApp = async (): Promise<void> => {
 
 
 const initializeApp = async (): Promise<void> => {
-    {
-        try {
-            await startApp();
-        } catch (error) {
-            console.error("Error starting the app:", error);
-        }
+    try {
+        await startApp();
+    } catch (error) {
+        console.error("Error starting the app:", error);
     }
 };
 

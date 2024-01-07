@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { User } from "../../Models/UserModel";
+import { Request, Response } from "express";
+import { User } from "../Models/UserModel";
 
 export default class AuthController {
     public async login(req: Request, res: Response): Promise<void> {
@@ -129,9 +129,5 @@ export default class AuthController {
             res.status(200).json({ message: "Check email and set new password" });
             await this.sendEmail(email, user._id.toString());
         }
-    }
-
-    public logout(req: Request, res: Response): void {
-        res.send("logout");
     }
 }

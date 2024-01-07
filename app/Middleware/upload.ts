@@ -31,6 +31,7 @@ const upload: multer.Multer = multer({
             case "image/jpg":
             case "image/jpeg":
             case "application/epub+zip":
+            case "application/pdf":
                 callback(null, true);
                 break;
             default:
@@ -38,7 +39,7 @@ const upload: multer.Multer = multer({
         }
     },
     limits: {
-        fileSize: 1024 * 1024 * 2
+        fileSize: 1024 * 1024 * 50
     }
 });
 

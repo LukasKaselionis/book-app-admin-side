@@ -18,6 +18,13 @@ export default class BookController {
             return;
         }
 
+        const existingBook = await Book.findOne({ title });
+        if (existingBook) {
+            res.status(409).json({ message: "A book with the same title already exists" });
+
+            return;
+        }
+
         if (req.files) {
             imagePath = await this.generateFilePath(req.files, "imagePath");
             filePath = await this.generateFilePath(req.files, "filePath");

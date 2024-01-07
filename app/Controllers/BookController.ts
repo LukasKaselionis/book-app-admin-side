@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { Book } from "../../Models/BookModel";
-import { unlink } from "fs";
 import path from "path";
+import { Request, Response } from "express";
+import { Book } from "../Models/BookModel";
+import { unlink } from "fs";
 
 export default class BookController {
     public async list(req: Request, res: Response): Promise<void> {

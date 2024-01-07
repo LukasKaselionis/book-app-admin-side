@@ -1,8 +1,8 @@
 import express, { Router, Request, Response } from "express";
 import { JWTMiddleware } from "../app/Middleware/jwt";
 import uploadMiddleware from "../app/Middleware/upload";
-import AuthController from "../app/Http/Controllers/AuthController";
-import BookController from "../app/Http/Controllers/BookController";
+import AuthController from "../app/Controllers/AuthController";
+import BookController from "../app/Controllers/BookController";
 
 const router: Router = express.Router();
 const authController: AuthController = new AuthController();
@@ -14,7 +14,6 @@ router.put("/set-new-password/:id", (req: Request, res: Response) => authControl
 router.post("/forgot-password", (req: Request, res: Response) => authController.forgotPassword(req, res));
 
 // Authorization routes
-router.post("/logout", JWTMiddleware, (req: Request, res: Response) => authController.logout(req, res));
 router.get("/book", JWTMiddleware, (req: Request, res: Response) => bookController.list(req, res));
 router.post("/book", [
     JWTMiddleware,

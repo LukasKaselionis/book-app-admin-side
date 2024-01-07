@@ -1,6 +1,17 @@
 import path from "path";
 import { Request } from "express";
 import multer, { diskStorage } from "multer";
+import fs from "fs";
+
+const ensureUploadsFolderExists = (): void => {
+    const uploadsFolderPath: string = path.join(__dirname, "../../uploads");
+
+    if (!fs.existsSync(uploadsFolderPath)) {
+        fs.mkdirSync(uploadsFolderPath);
+    }
+};
+
+ensureUploadsFolderExists();
 
 const storage: multer.StorageEngine = diskStorage({
     destination: (req: Request, file: Express.Multer.File, cb) => {

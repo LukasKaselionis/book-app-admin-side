@@ -1,5 +1,6 @@
 import express, { Router, Request, Response } from "express";
-import { JWTMiddleware } from "../app/Middleware/JWTMiddleware";
+import { JWTMiddleware } from "../app/Middleware/jwt";
+import uploadMiddleware from "../app/Middleware/upload";
 import AuthController from "../app/Http/Controllers/AuthController";
 import BookController from "../app/Http/Controllers/BookController";
 
@@ -15,8 +16,14 @@ router.post("/forgot-password", (req: Request, res: Response) => authController.
 // Authorization routes
 router.post("/logout", JWTMiddleware, (req: Request, res: Response) => authController.logout(req, res));
 router.get("/book", JWTMiddleware, (req: Request, res: Response) => bookController.list(req, res));
-router.post("/book", JWTMiddleware, (req: Request, res: Response) => bookController.create(req, res));
-router.patch("/book", JWTMiddleware, (req: Request, res: Response) => bookController.update(req, res));
+router.post("/book", [
+    JWTMiddleware,
+    uploadMiddleware.fields([{ name: "imagePath" }, { name: "filePath" }])
+], (req: Request, res: Response) => bookController.create(req, res));
+router.patch("/book", [
+    JWTMiddleware,
+    uploadMiddleware.fields([{ name: "imagePath" }, { name: "filePath" }])
+], (req: Request, res: Response) => bookController.update(req, res));
 router.delete("/book", JWTMiddleware, (req: Request, res: Response) => bookController.delete(req, res));
 
 export default router;

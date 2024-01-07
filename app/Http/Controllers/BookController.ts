@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { Book } from "../../Models/BookSchema";
+import { Book } from "../../Models/BookModel";
+import { unlink } from "fs";
+import path from "path";
 
 export default class BookController {
     public async list(req: Request, res: Response): Promise<void> {
@@ -7,16 +9,19 @@ export default class BookController {
         res.send({ books });
     }
     public async create(req: Request, res: Response): Promise<void> {
-        const { title, description, imagePath, filePath } = req.body;
+        const { title, description } = req.body;
+        let { imagePath, filePath } = req.body;
 
-        // TODO: !title || !descriptio || !imagePath || !filePath
         if (!title || !description) {
             res.status(422).json({ message: "Missing required fields" });
 
             return;
         }
 
-        // TODO: upload file and image, then save book
+        if (req.files) {
+            imagePath = await this.generateFilePath(req.files, "imagePath");
+            filePath = await this.generateFilePath(req.files, "filePath");
+        }
 
         const book = new Book({
             title,
@@ -30,16 +35,18 @@ export default class BookController {
             .then(() => {
                 res.status(201).json({
                     message: "Book created successfully!",
+                    book
                 });
             })
-            .catch(() => {
+            .catch((error) => {
                 res.status(500).json({
                     message: "An error occurred during create new book",
+                    error
                 });
             });
     }
     public async update(req: Request, res: Response): Promise<void> {
-        const { id, title, description, imagePath, filePath } = req.body;
+        const { id, title, description } = req.body;
         const book = await Book.findOne({ _id: id });
 
         if (!book) {
@@ -48,12 +55,20 @@ export default class BookController {
             return;
         }
 
-        // TODO: if file or image is new, update them
-
         if (title) book.title = title;
         if (description) book.description = description;
-        if (imagePath) book.imagePath = imagePath;
-        if (filePath) book.filePath = filePath;
+        if (req.files) {
+            if (book.imagePath) {
+                await this.removeOldFiles([book.imagePath]);
+            }
+
+            if (book.filePath) {
+                await this.removeOldFiles([book.filePath]);
+            }
+
+            book.imagePath = await this.generateFilePath(req.files, "imagePath");
+            book.filePath = await this.generateFilePath(req.files, "filePath");
+        }
 
         await book.save()
             .then(() => {
@@ -71,6 +86,34 @@ export default class BookController {
             res.json({ message: "Book deleted successfully" });
         } else {
             res.status(404).json({ error: "Book not found" });
+        }
+    }
+
+    private generateFilePath
+    (
+        files: { [fieldname: string]: Express.Multer.File[]; } | Express.Multer.File[],
+        fieldName: string
+    ): Promise<string> {
+        return new Promise<string>((resolve) => {
+            for (const fileArray of Object.values(files)) {
+                for (const file of fileArray) {
+                    if (file.fieldname === fieldName) {
+                        resolve(file.path);
+
+                        return;
+                    }
+                }
+            }
+
+            resolve("");
+        });
+    }
+
+    private async removeOldFiles(files: string[]): Promise<void> {
+        const uploadsFolder: string = path.join(__dirname, "../../../");
+        for (const file of files) {
+            const filePath: string = path.join(uploadsFolder, file);
+            unlink(filePath, () => {});
         }
     }
 }

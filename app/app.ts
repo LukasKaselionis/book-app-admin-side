@@ -9,6 +9,7 @@ const port: string | number = process.env.PORT || 3004;
 // Routes
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use("/uploads", express.static("app/uploads"));
 
 const startApp = async (): Promise<void> => {
     const dbClient = await connectToMongoDB();

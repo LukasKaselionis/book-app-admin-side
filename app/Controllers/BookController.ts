@@ -45,11 +45,8 @@ export default class BookController {
                     book
                 });
             })
-            .catch((error) => {
-                res.status(500).json({
-                    message: "An error occurred during create new book",
-                    error
-                });
+            .catch(() => {
+                res.status(500).json({ message: "An error occurred during create new book" });
             });
     }
     public async update(req: Request, res: Response): Promise<void> {
@@ -79,7 +76,7 @@ export default class BookController {
 
         await book.save()
             .then(() => {
-                res.send({ message: "Book updated successfully", book });
+                res.send({ message: "Book updated successfully" });
             })
             .catch(() => {
                 res.status(500).send({ message: "Internal server error" });
@@ -92,7 +89,7 @@ export default class BookController {
         if (book) {
             res.json({ message: "Book deleted successfully" });
         } else {
-            res.status(404).json({ error: "Book not found" });
+            res.status(404).json({ message: "Book not found" });
         }
     }
 

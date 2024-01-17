@@ -82,7 +82,7 @@ export default class AuthController {
             from: "book@app.com",
             to: email,
             subject: "Set new password",
-            text: `Click this link and set new password: /api/set-new-password/${id}`,
+            text: `Click this link and set new password: /new-password/${id}`,
         });
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }

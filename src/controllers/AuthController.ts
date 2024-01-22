@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { User } from "../Models/UserModel";
+import { User } from "../models/UserModel";
 
 export default class AuthController {
     public async login(req: Request, res: Response): Promise<void> {

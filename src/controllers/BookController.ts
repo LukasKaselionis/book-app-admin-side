@@ -1,6 +1,6 @@
 import path from "path";
 import { Request, Response } from "express";
-import { Book } from "../Models/BookModel";
+import { Book } from "../models/BookModel";
 import { unlink } from "fs";
 
 export default class BookController {

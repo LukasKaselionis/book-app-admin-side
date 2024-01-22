@@ -1,8 +1,8 @@
 import express, { Router, Request, Response } from "express";
-import { JWTMiddleware } from "../app/Middleware/jwt";
-import uploadMiddleware from "../app/Middleware/upload";
-import AuthController from "../app/Controllers/AuthController";
-import BookController from "../app/Controllers/BookController";
+import { JWTMiddleware } from "../middleware/jwt";
+import uploadMiddleware from "../middleware/upload";
+import AuthController from "../controllers/AuthController";
+import BookController from "../controllers/BookController";
 
 const router: Router = express.Router();
 const authController: AuthController = new AuthController();
